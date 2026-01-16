@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS tools_borrow_mapping;
