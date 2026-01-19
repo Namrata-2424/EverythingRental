@@ -53,6 +53,39 @@ async function register(userData, addressData){
     }
 }
 
+async function login(username, password) {
+  const client = await pool.connect();
+
+  try {
+    const user = await authRepository.findUserByUsername(client, username);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const isValid = await bcrypt.compare(
+      password,
+      user.user_password
+    );
+
+    if (!isValid) {
+      throw new Error("Invalid credentials");
+    }
+
+    const token = await generateToken(user);
+    return token;
+
+  } catch (err) {
+    throw new Error(err.message || "Login failed");
+
+  } finally {
+    client.release();
+  }
+}
+
+
 module.exports = {
-    register
+    register,
+    login
+    
 }

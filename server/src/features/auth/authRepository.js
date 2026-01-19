@@ -39,7 +39,21 @@ async function createUserWithAddress(client, userData, addressData){
     return user;
 }
 
+async function findUserByUsername(client, username) {
+  const q = squel
+    .select()
+    .from("users")
+    .where("username = ?", username)
+    .limit(1);
+
+  const { text, values } = q.toParam();
+  const res = await client.query(text, values);
+
+  return res.rows[0];
+}
+
 module.exports = {
     findUserByEmail,
-    createUserWithAddress
+    createUserWithAddress,
+    findUserByUsername
 }
