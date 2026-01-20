@@ -1,9 +1,6 @@
 const authService = require("./authService")
-const {pool} = require("../../shared/config/db");
 
 async function register(req,res){
-    console.log("RAW BODY:", req.body);
-
     try{
         const {
             firstName,
