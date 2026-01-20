@@ -3,38 +3,30 @@ const lendToolsService = require("./lendToolsService");
 async function listATool(req, res) {
   try {
     const lenderUuid = req.user.userId;
-    const {
-      title,
-      category,
-      description,
-      quantity,
-      borrow_day_count 
-    } = req.body;
+    const { title, category, description, quantity } = req.body;
 
     if (!title || !category || !quantity) {
       return res.status(400).json({
-        message: "Missing required fields"
+        message: "Missing required fields",
       });
     }
 
     const result = await lendToolsService.listATool(
       lenderUuid,
       { title, category, description },
-      { quantity, borrow_day_count } 
+      { quantity },
     );
 
     return res.status(201).json({
       message: "Tool listed successfully",
-      data: result
+      data: result,
     });
-
   } catch (err) {
     return res.status(400).json({
-      message: err.message
+      message: err.message,
     });
   }
 }
-
 
 async function deleteAListedTool(req, res) {
   try {

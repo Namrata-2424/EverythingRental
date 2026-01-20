@@ -14,34 +14,19 @@ async function createTool(client, toolData) {
   return res.rows[0];
 }
 
-async function createToolOwner(
-  client,
-  lenderUuid,
-  toolUuid,
-  ownerData
-) {
+async function createToolOwner(client, lenderUuid, toolUuid, ownerData) {
   const q = squel
     .insert()
     .into("tool_owners")
     .set("lender_uuid", lenderUuid)
     .set("tool_uuid", toolUuid)
-    .set("quantity", ownerData.quantity);
-
-  if (ownerData.borrow_day_count !== undefined) {
-    if (ownerData.borrow_day_count <= 0) {
-      throw new Error("Borrow day count must be greater than 0");
-    }
-    q.set("borrow_day_count", ownerData.borrow_day_count);
-  }
-
-  q.returning("lend_uuid, quantity, borrow_day_count");
+    .set("quantity", ownerData.quantity)
+    .returning("lend_uuid, quantity, borrow_day_count");
 
   const { text, values } = q.toParam();
   const res = await client.query(text, values);
-
   return res.rows[0];
 }
-
 
 async function deleteToolOwner(client, toolUuid) {
   const q = squel.delete().from("tool_owners").where("tool_uuid = ?", toolUuid);
