@@ -53,11 +53,11 @@ async function register(userData, addressData){
     }
 }
 
-async function login(username, password) {
+async function login(userName, password) {
   const client = await pool.connect();
 
   try {
-    const user = await authRepository.findUserByUsername(client, username);
+    const user = await authRepository.findUserByUsername(client, userName);
 
     if (!user) {
       throw new Error("User not found");
