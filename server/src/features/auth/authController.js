@@ -51,15 +51,15 @@ async function register(req,res){
 
 async function login(req, res) {
   try {
-    const { username, password } = req.body;
+    const { userName, password } = req.body;
 
-    if (!username || !password) {
+    if (!userName || !password) {
       return res.status(400).json({
         message: "Username and password are required"
       });
     }
 
-    const token = await authService.login(username, password);
+    const token = await authService.login(userName, password);
 
     return res.status(200).json({
       message: "Login successful",
