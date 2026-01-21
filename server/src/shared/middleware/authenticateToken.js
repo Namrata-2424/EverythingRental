@@ -1,13 +1,12 @@
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 
 function authenticateToken(req, res, next) {
   try {
     const authHeader = req.headers["authorization"];
 
-    if (!authHeader) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
-        message: "Authorization header missing"
+        message: "Invalid authorization format. Use Bearer token",
       });
     }
 
@@ -15,24 +14,17 @@ function authenticateToken(req, res, next) {
 
     if (!token) {
       return res.status(401).json({
-        message: "JWT token missing"
+        message: "JWT token missing",
       });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        return res.status(403).json({
-          message: "Invalid or expired token"
-        });
-      }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      req.user = decoded;
-      next();
-    });
-
+    req.user = decoded;
+    next();
   } catch (error) {
-    return res.status(500).json({
-      message: "Authentication failed"
+    return res.status(403).json({
+      message: "Invalid or expired token",
     });
   }
 }
