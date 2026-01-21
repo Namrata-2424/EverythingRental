@@ -41,6 +41,10 @@ async function deleteMe(userId){
     const {text, values} = deleteQuery.toParam();
     const res = await pool.query(text,values);
 
+    if (res.rowCount === 0) {
+      throw new Error("User not found");
+    }
+
     return {success:true};
 }
 
@@ -57,9 +61,9 @@ async function updateUserById(userId,data){
         fields.push(`last_name = $${index++}`);
         values.push(data.lastName);
     }
-    if(data.userName){
+    if(data.username){
         fields.push(`username = $${index++}`);
-        values.push(data.userName);
+        values.push(data.username);
     }
     if(data.phoneNumber){
         fields.push(`phone_number = $${index++}`);
@@ -88,8 +92,8 @@ async function updateUserById(userId,data){
 
     const result = await pool.query(query, values);
 
-    if(!result){
-        throw new Error("User not found!");
+    if (result.rowCount === 0) {
+      throw new Error("User not found!");
     }
 
     return result.rows[0];
@@ -145,7 +149,7 @@ async function updateAddressById(userId, addressId, data){
 
   const result = await pool.query(query,values);
 
-  if(!result){
+  if (result.rowCount === 0) {
     throw new Error("No address found");
   }
 
