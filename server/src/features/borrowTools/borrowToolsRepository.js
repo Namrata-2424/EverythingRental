@@ -1,4 +1,4 @@
-const squel = require("squel");
+const squel = require("squel").useFlavour("postgres");
 const { pool } = require("../../shared/config/db");
 
 async function getAllTools() {
@@ -102,16 +102,15 @@ async function borrowATool(
 
     await client.query(
       `
-      INSERT INTO tool_borrows (
+      INSERT INTO tools_borrow_mapping (
         borrower_uuid,
         lender_uuid,
         tool_uuid,
         quantity,
         start_date,
-        due_date,
-        borrowed_at
+        due_date
       )
-      VALUES ($1, $2, $3, $4, $5, $6, NOW())
+      VALUES ($1, $2, $3, $4, $5, $6)
       `,
       [borrowerId, lenderUuid, tooluuid, quantity, startDate, dueDate],
     );

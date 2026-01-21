@@ -5,7 +5,6 @@ async function getAllTools(req, res) {
     const tools = await borrowToolsService.getAllTools();
     return res.status(200).json(tools);
   } catch (err) {
-    console.error("GET ALL TOOLS ERROR:", err.message);
     return res.status(500).json({
       message: err.message,
     });
@@ -23,7 +22,6 @@ async function getAToolInfo(req, res) {
 
     return res.status(200).json(tool);
   } catch (err) {
-    console.error("GET A TOOL INFO ERROR:", err.message);
     return res.status(500).json({
       message: "Could not get Tool!",
     });

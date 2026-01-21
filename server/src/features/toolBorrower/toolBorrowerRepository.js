@@ -1,4 +1,4 @@
-const squel = require("squel");
+const squel = require("squel").useFlavour("postgres");
 const { pool } = require("../../shared/config/db");
 
 async function getAllBorrowedToolsByUserId(borrowerId) {
@@ -14,7 +14,7 @@ async function getAllBorrowedToolsByUserId(borrowerId) {
   const { text, values } = query.toParam();
   const result = await pool.query(text, values);
 
-  return result;
+  return result.rows;
 }
 
 async function getABorrowById(borrowerId, borrowuuid) {
