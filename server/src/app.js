@@ -6,6 +6,9 @@ const lendToolsApi = require("./features/lendTools/lendToolsApi");
 const authenticateToken = require(
   "./shared/middleware/authenticateToken"
 );
+const borrowToolRoutes = require("./features/borrowTools/borrowToolsApi");
+const toolBorrowerRoutes = require("./features/toolBorrower/toolBorrowerApi");
+
 const app = express();
 
 app.use(cors());
@@ -13,5 +16,7 @@ app.use(express.json());
 
 app.use('/api/auth',authRoutes);
 app.use("/api/lender",authenticateToken, lendToolsApi);
+app.use('/api/tools',borrowToolRoutes);
+app.use('/api/borrows',authenticateToken, toolBorrowerRoutes);
 
 module.exports = app;
