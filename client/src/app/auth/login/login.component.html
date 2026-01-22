@@ -1,1 +1,44 @@
-<p>login works!</p>
+<div class="register-container">
+  <div class="card register-card">
+
+    <div class="logo-container mb-3">
+      <img src="assets/logo.png" alt="Everything Rental Logo" class="logo" />
+    </div>
+
+    <h4 class="text-center mb-4 brand-title">Everything Rental</h4>
+
+    <div class="auth-toggle mb-4">
+      <span (click)="goToRegister()">Register</span>
+      <span class="active">Login</span>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm">
+      <input
+        class="form-control"
+        placeholder="Username"
+        formControlName="userName"
+      />
+
+      <input
+        type="password"
+        class="form-control mt-2"
+        placeholder="Password"
+        formControlName="password"
+      />
+
+      <button
+        type="button"
+        class="btn next-btn w-100 mt-4"
+        [disabled]="loading || loginForm.invalid"
+        (click)="login()"
+      >
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
+
+      <p class="error-text mt-3 text-center" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </p>
+    </form>
+  </div>
+</div>
