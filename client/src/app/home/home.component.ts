@@ -10,5 +10,6 @@ import { NavbarComponent } from '../layout/navbar/navbar.component';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
-  username = 'User';
+  username = localStorage.getItem('username') || 'User';
+;
 }
