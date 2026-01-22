@@ -8,8 +8,9 @@ const authenticateToken = require(
 );
 const borrowToolRoutes = require("./features/borrowTools/borrowToolsApi");
 const toolBorrowerRoutes = require("./features/toolBorrower/toolBorrowerApi");
-
 const lenderBorrowsApi = require("./features/lenderBorrows/lenderBorrowsApi");
+const userRoutes = require("./features/user/userApi");
+
 const app = express();
 
 app.use(cors());
@@ -20,5 +21,6 @@ app.use("/api/lender",authenticateToken, lendToolsApi);
 app.use('/api/tools',borrowToolRoutes);
 app.use('/api/borrows',authenticateToken, toolBorrowerRoutes);
 app.use("/api/lender", authenticateToken, lenderBorrowsApi);
+app.use("/api",authenticateToken,userRoutes)
 
 module.exports = app;
