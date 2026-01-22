@@ -1,1 +1,126 @@
-<p>register works!</p>
+<div class="register-container">
+  <div class="card register-card">
+    <div class="logo-container mb-3">
+      <img src="assets/logo.png" alt="Everything Rental Logo" class="logo" />
+    </div>
+    <h4 class="text-center mb-4 brand-title">Everything Rental</h4>
+    <!-- Register / Login toggle -->
+    <div class="auth-toggle mb-4">
+      <span class="active">Register</span>
+      <span (click)="goToLogin()">Login</span>
+    </div>
+
+    <!-- SINGLE FORM -->
+    <form [formGroup]="registerForm">
+      <!-- STEP 1 -->
+      <div *ngIf="step === 1">
+        <input
+          class="form-control"
+          placeholder="Username"
+          formControlName="userName"
+        />
+
+        <div class="row mt-2">
+          <div class="col">
+            <input
+              class="form-control"
+              placeholder="First Name"
+              formControlName="firstName"
+            />
+          </div>
+          <div class="col">
+            <input
+              class="form-control"
+              placeholder="Last Name"
+              formControlName="lastName"
+            />
+          </div>
+        </div>
+
+        <input
+          class="form-control mt-2"
+          placeholder="Phone Number"
+          formControlName="phoneNumber"
+        />
+        <input
+          class="form-control mt-2"
+          placeholder="Email ID"
+          formControlName="email"
+        />
+
+        <div class="row mt-2">
+          <div class="col">
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Password"
+              formControlName="password"
+            />
+          </div>
+          <div class="col">
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Confirm Password"
+              formControlName="confirmPassword"
+            />
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn next-btn w-100 mt-4"
+          (click)="nextStep()"
+        >
+          Next →
+        </button>
+      </div>
+
+      <!-- STEP 2 -->
+      <div *ngIf="step === 2">
+        <button type="button" class="btn back-btn mb-3" (click)="back()">
+          ← Back
+        </button>
+
+        <input class="form-control" placeholder="City" formControlName="city" />
+        <input
+          class="form-control mt-2"
+          placeholder="Locality / Neighborhood"
+          formControlName="locality"
+        />
+
+        <div class="row mt-2">
+          <div class="col">
+            <input
+              class="form-control"
+              placeholder="Pincode / ZIP"
+              formControlName="pincode"
+            />
+          </div>
+          <div class="col">
+            <input
+              class="form-control"
+              placeholder="State"
+              formControlName="stateName"
+            />
+          </div>
+        </div>
+
+        <input
+          class="form-control mt-2"
+          placeholder="Country"
+          formControlName="country"
+        />
+
+        <button
+          type="button"
+          class="btn complete-btn w-100 mt-4"
+          [disabled]="loading"
+          (click)="submit()"
+        >
+          {{ loading ? "Registering..." : "Complete Registration" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
