@@ -1,0 +1,67 @@
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f7f8f3;
+}
+
+.register-card {
+  width: 400px;
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.auth-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.auth-toggle span {
+  padding-bottom: 6px;
+  color: #777;
+}
+
+.auth-toggle .active {
+  color: #422D19;
+  border-bottom: 2px solid #896240;
+}
+
+.form-control {
+  border-radius: 8px;
+}
+
+.next-btn {
+  background-color: #896240;
+  color: white;
+  border-radius: 8px;
+}
+
+.next-btn:hover {
+  background-color: #422D19;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.brand-title {
+  font-weight: 600;
+  color: #422D19;
+}
+
+.error-text {
+  font-size: 0.85rem;
+  color: #c0392b;
+}
