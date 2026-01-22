@@ -1,1 +1,103 @@
-<p>profile works!</p>
+<app-navbar></app-navbar>
+
+<div class="container my-5" *ngIf="!loading">
+  <div class="text-center mb-4">
+    <img src="assets/logo.png" class="profile-logo mb-2" />
+    <h3 class="brand-text">My Profile</h3>
+  </div>
+
+  <!-- USER INFO -->
+  <div class="card mb-4 profile-card">
+    <div class="card-header d-flex justify-content-between">
+      <strong>Personal Information</strong>
+      <button class="btn btn-sm edit-btn" (click)="editUser = !editUser">
+        <i class="bi bi-pencil"></i>
+        {{ editUser ? 'Cancel' : 'Edit' }}
+      </button>
+    </div>
+
+    <div class="card-body">
+      <div *ngIf="!editUser">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Name:</strong> {{ user.firstName }} {{ user.lastName }}</p>
+        <p><strong>Phone:</strong> {{ user.phoneNumber }}</p>
+      </div>
+
+      <form *ngIf="editUser" [formGroup]="userForm">
+        <div class="row">
+          <div class="col-md-6 mb-2">
+            <label class="form-label">First Name</label>
+            <input class="form-control" formControlName="firstName">
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <label class="form-label">Last Name</label>
+            <input class="form-control" formControlName="lastName">
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <label class="form-label">Phone Number</label>
+            <input class="form-control" formControlName="phoneNumber">
+          </div>
+        </div>
+
+        <button class="btn save-btn mt-3" (click)="saveUser()">
+          <i class="bi bi-check-circle"></i> Save
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADDRESS -->
+  <div class="card profile-card">
+    <div class="card-header d-flex justify-content-between">
+      <strong>Address</strong>
+      <button class="btn btn-sm edit-btn" (click)="editAddress = !editAddress">
+        <i class="bi bi-pencil"></i>
+        {{ editAddress ? 'Cancel' : 'Edit' }}
+      </button>
+    </div>
+
+    <div class="card-body">
+      <div *ngIf="!editAddress">
+        <p>{{ address.locality }}, {{ address.city }}</p>
+        <p>{{ address.stateName }} - {{ address.pincode }}</p>
+        <p>{{ address.country }}</p>
+      </div>
+
+      <form *ngIf="editAddress" [formGroup]="addressForm">
+        <div class="row">
+          <div class="col-md-6 mb-2">
+            <label class="form-label">City</label>
+            <input class="form-control" formControlName="city">
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <label class="form-label">Locality</label>
+            <input class="form-control" formControlName="locality">
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <label class="form-label">Pincode</label>
+            <input class="form-control" formControlName="pincode">
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <label class="form-label">State</label>
+            <input class="form-control" formControlName="stateName">
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <label class="form-label">Country</label>
+            <input class="form-control" formControlName="country">
+          </div>
+        </div>
+
+        <button class="btn save-btn mt-3" (click)="saveAddress()">
+          <i class="bi bi-check-circle"></i> Save
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
