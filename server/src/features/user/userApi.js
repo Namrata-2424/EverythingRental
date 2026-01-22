@@ -5,8 +5,9 @@ const userController = require("./userController");
 router.get('/me',
     userController.getLoggedInUserInfo);
 
-router.delete('/me',
-    userController.deleteMe);
+// later on add soft delete
+// router.delete('/me',
+//     userController.deleteMe);
 
 router.patch('/me',
     userController.updateMyPersonalInfo);

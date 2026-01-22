@@ -32,21 +32,21 @@ async function getLoggedInUserInfo(userId){
     return result.rows[0];
 }
 
-async function deleteMe(userId){
-    const deleteQuery = squel
-      .delete()
-      .from('users')
-      .where('user_uuid = ?',userId)
+// async function deleteMe(userId){
+//     const deleteQuery = squel
+//       .delete()
+//       .from('users')
+//       .where('user_uuid = ?',userId)
 
-    const {text, values} = deleteQuery.toParam();
-    const res = await pool.query(text,values);
+//     const {text, values} = deleteQuery.toParam();
+//     const res = await pool.query(text,values);
 
-    if (res.rowCount === 0) {
-      throw new Error("User not found");
-    }
+//     if (res.rowCount === 0) {
+//       throw new Error("User not found");
+//     }
 
-    return {success:true};
-}
+//     return {success:true};
+// }
 
 async function updateUserById(userId,data){
     const fields = [];
@@ -158,7 +158,6 @@ async function updateAddressById(userId, addressId, data){
 
 module.exports = {
     getLoggedInUserInfo,
-    deleteMe,
     updateUserById,
     updateAddressById
 }

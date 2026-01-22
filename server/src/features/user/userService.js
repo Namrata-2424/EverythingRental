@@ -7,12 +7,12 @@ async function getLoggedInUserInfo(loggedInUserId){
     return userData;
 }
 
-async function deleteMe(myId){
-    const userId = myId;
-    const result = await userRepository.deleteMe(userId);
+// async function deleteMe(myId){
+//     const userId = myId;
+//     const result = await userRepository.deleteMe(userId);
 
-    return result;
-}
+//     return result;
+// }
 
 async function updateMyPersonalInfo(myId, data){
     const userId = myId;
@@ -33,7 +33,6 @@ async function updateMyAddress(myId,addId,data){
 
 module.exports = {
     getLoggedInUserInfo,
-    deleteMe,
     updateMyPersonalInfo,
     updateMyAddress
 }

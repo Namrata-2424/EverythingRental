@@ -20,18 +20,18 @@ async function getLoggedInUserInfo(req,res){
     }
 }
 
-async function deleteMe(req,res){
-    try{
-        const myId = req.user.userId;
-        await userService.deleteMe(myId);
+// async function deleteMe(req,res){
+//     try{
+//         const myId = req.user.userId;
+//         await userService.deleteMe(myId);
 
-        return res.status(200).json({message:"User Deleted Successfully!"});
-    }catch(err){
-        return res.status(500).json({
-            message:`${err.message} Could not delete user!`
-        })
-    }
-}
+//         return res.status(200).json({message:"User Deleted Successfully!"});
+//     }catch(err){
+//         return res.status(500).json({
+//             message:`${err.message} Could not delete user!`
+//         })
+//     }
+// }
 
 async function updateMyPersonalInfo(req,res){
     try{
@@ -84,7 +84,6 @@ async function updateMyAddress(req,res){
 
 module.exports = {
     getLoggedInUserInfo,
-    deleteMe,
     updateMyPersonalInfo,
     updateMyAddress
 }
