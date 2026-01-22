@@ -13,6 +13,7 @@ async function getLoggedInUserInfo(userId){
         COALESCE(
           json_agg(
             json_build_object(
+              'addressId', a.address_uuid,
               'city',a.city,
               'locality',a.locality,
               'pincode',a.pincode,
