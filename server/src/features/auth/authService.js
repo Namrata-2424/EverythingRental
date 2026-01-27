@@ -77,8 +77,6 @@ async function login(userName, password) {
     return token;
   } catch (err) {
     throw new Error(err.message || "Login failed");
-  } finally {
-    client.release();
   }
 }
 

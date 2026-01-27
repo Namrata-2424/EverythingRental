@@ -11,8 +11,10 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class NavbarComponent {
   constructor(private router: Router) {}
+
   logout() {
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('username');
     this.router.navigate(['/login']);
   }
 }
