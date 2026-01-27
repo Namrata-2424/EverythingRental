@@ -1,93 +1,51 @@
-const { pool } = require("../../shared/config/db");
 const lendToolsRepository = require("./lendToolsRepository");
 
 async function listATool(lenderUuid, toolData, ownerData) {
-  const client = await pool.connect();
+  const tool = await lendToolsRepository.createTool(toolData);
 
-  try {
-    await client.query("BEGIN");
+  const toolOwner = await lendToolsRepository.createToolOwner(
+    lenderUuid,
+    tool.tool_uuid,
+    ownerData
+  );
 
-    const tool = await lendToolsRepository.createTool(client, toolData);
-
-    const toolOwner = await lendToolsRepository.createToolOwner(
-      client,
-      lenderUuid,
-      tool.tool_uuid,
-      ownerData,
-    );
-
-    await client.query("COMMIT");
-
-    return { tool, toolOwner };
-  } catch (err) {
-    await client.query("ROLLBACK");
-    throw err;
-  } finally {
-    client.release();
-  }
+  return { tool, toolOwner };
 }
 
 async function deleteAListedTool(toolUuid) {
-  const client = await pool.connect();
+  const isBorrowed =
+    await lendToolsRepository.isToolCurrentlyBorrowed(toolUuid);
 
-  try {
-    await client.query("BEGIN");
-
-    await lendToolsRepository.deleteToolOwner(client, toolUuid);
-
-    await lendToolsRepository.deleteTool(client, toolUuid);
-
-    await client.query("COMMIT");
-  } catch (err) {
-    await client.query("ROLLBACK");
-    throw err;
-  } finally {
-    client.release();
+  if (isBorrowed) {
+    throw new Error(
+      "Tool cannot be deleted because it is currently borrowed"
+    );
   }
+
+  await lendToolsRepository.deleteToolOwner(toolUuid);
+  await lendToolsRepository.deleteTool(toolUuid);
 }
 
+
 async function getaListedTool(toolUuid) {
-  const client = await pool.connect();
-  try {
-    return await lendToolsRepository.getToolByUuid(client, toolUuid);
-  } finally {
-    client.release();
-  }
+  return await lendToolsRepository.getToolByUuid(toolUuid);
 }
 
 async function getAllListedTools(lenderUuid) {
-  const client = await pool.connect();
-  try {
-    return await lendToolsRepository.getAllToolsByLender(client, lenderUuid);
-  } finally {
-    client.release();
-  }
+  return await lendToolsRepository.getAllToolsByLender(lenderUuid);
 }
 
 async function updateAListedTool(toolUuid, updateData) {
-  const client = await pool.connect();
+  const updated = await lendToolsRepository.updateToolOwner(
+    toolUuid,
+    updateData
+  );
 
-  try {
-    await client.query("BEGIN");
-
-    const updated = await lendToolsRepository.updateToolOwner(
-      client,
-      toolUuid,
-      updateData,
-    );
-
-    if (!updated) {
-      throw new Error("Tool not found");
-    }
-
-    await client.query("COMMIT");
-    return updated;
-  } catch (err) {
-    await client.query("ROLLBACK");
-    throw err;
-  } finally {
-    client.release();
+  if (!updated) {
+    throw new Error("Tool not found");
   }
+
+  return updated;
 }
 
 module.exports = {

@@ -1,7 +1,8 @@
+const { pool } = require("../../shared/config/db");
 const squel = require("squel").useFlavour("postgres");
 
-async function getAllBorrowsByLender(client, lenderUuid) {
-  const q = squel
+async function getAllBorrowsByLender(lenderUuid) {
+  const query = squel
     .select()
     .from("tools_borrow_mapping", "b")
     .join("users", "u", "b.borrower_uuid = u.user_uuid")
@@ -17,13 +18,13 @@ async function getAllBorrowsByLender(client, lenderUuid) {
     .field("t.title", "tool_title")
     .order("b.created_at", false);
 
-  const { text, values } = q.toParam();
-  const res = await client.query(text, values);
+  const { text, values } = query.toParam();
+  const res = await pool.query(text, values);
   return res.rows;
 }
 
-async function getBorrowById(client, borrowUuid) {
-  const q = squel
+async function getBorrowById(borrowUuid) {
+  const query = squel
     .select()
     .from("tools_borrow_mapping", "b")
     .join("users", "u", "b.borrower_uuid = u.user_uuid")
@@ -39,14 +40,13 @@ async function getBorrowById(client, borrowUuid) {
     .field("u.phone_number")
     .field("t.title", "tool_title");
 
-  const { text, values } = q.toParam();
-  const res = await client.query(text, values);
+  const { text, values } = query.toParam();
+  const res = await pool.query(text, values);
   return res.rows[0];
 }
 
-
-async function markReturnApproved(client, borrowUuid) {
-  const q = squel
+async function markReturnApproved(borrowUuid) {
+  const query = squel
     .update()
     .table("tools_borrow_mapping")
     .set("return_status", "RETURNED")
@@ -54,13 +54,13 @@ async function markReturnApproved(client, borrowUuid) {
     .where("borrow_uuid = ?", borrowUuid)
     .returning("borrow_uuid");
 
-  const { text, values } = q.toParam();
-  const res = await client.query(text, values);
+  const { text, values } = query.toParam();
+  const res = await pool.query(text, values);
   return res.rows[0];
 }
 
 module.exports = {
   getAllBorrowsByLender,
   getBorrowById,
-  markReturnApproved
+  markReturnApproved,
 };
