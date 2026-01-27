@@ -4,7 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { authGuard } from './guards/auth.guard';
 import { guestGuard } from './guards/guest.guard';
-
+import { lenderRoutes } from './lender/lender.routes';
 export const routes: Routes = [
   {
     path: '',
@@ -32,8 +32,10 @@ export const routes: Routes = [
     component: ProfileComponent,
     canActivate: [authGuard]
   },
+  ...lenderRoutes,
   {
     path: '**',
     redirectTo: 'register',
   },
+
 ];
