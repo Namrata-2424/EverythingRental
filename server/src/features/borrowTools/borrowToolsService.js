@@ -5,7 +5,13 @@ async function getAllTools() {
 }
 
 async function getAToolInfo(tooluuid) {
-  return borrowToolsRepository.getAToolInfoById(tooluuid);
+  const tool = await borrowToolsRepository.getAToolInfoById(tooluuid);
+
+  if (!tool) {
+    throw new Error("Tool not found");
+  }
+
+  return tool;
 }
 
 async function borrowATool(
@@ -16,7 +22,7 @@ async function borrowATool(
   startDate,
   dueDate,
 ) {
-  return borrowToolsRepository.borrowATool(
+  const result = await borrowToolsRepository.borrowATool(
     borrowerId,
     tooluuid,
     lenderuuid,
@@ -24,6 +30,15 @@ async function borrowATool(
     startDate,
     dueDate,
   );
+
+  if (!result) {
+    throw new Error("Not enough quantity available or invalid tool");
+  }
+
+  return {
+    success: true,
+    message: "Tool borrowed successfully",
+  };
 }
 
 module.exports = {

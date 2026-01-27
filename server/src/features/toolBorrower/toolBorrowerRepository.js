@@ -53,61 +53,41 @@ async function returnAToolById(borrowerId, borrowuuid) {
   try {
     await client.query("BEGIN");
 
-    // Lock the borrow record
-    const borrowResult = await client.query(
-      `
-      SELECT
-        b.tool_uuid,
-        b.lender_uuid,
-        b.quantity,
-        b.return_status
-      FROM tools_borrow_mapping b
-      WHERE b.borrow_uuid = $1
-        AND b.borrower_uuid = $2
-      FOR UPDATE
-      `,
-      [borrowuuid, borrowerId],
-    );
-
-    if (borrowResult.rowCount === 0) {
-      throw new Error("Borrow record not found");
-    }
-
-    const borrow = borrowResult.rows[0];
-
-    if (borrow.return_status !== "Borrowed") {
-      throw new Error("Tool has already been returned");
-    }
-
-    // Mark as returned
-    await client.query(
-      `
+    const updateBorrowSql = `
       UPDATE tools_borrow_mapping
       SET
         return_status = 'Returned',
         return_date = CURRENT_DATE
       WHERE borrow_uuid = $1
-      `,
-      [borrowuuid],
-    );
+        AND borrower_uuid = $2
+        AND return_status = 'Borrowed'
+      RETURNING tool_uuid, lender_uuid, quantity
+    `;
 
-    // Restore quantity to tool owner
-    await client.query(
-      `
-      UPDATE tool_owners
-      SET quantity = quantity + $1
-      WHERE tool_uuid = $2
-        AND lender_uuid = $3
-      `,
-      [borrow.quantity, borrow.tool_uuid, borrow.lender_uuid],
-    );
+    const borrowResult = await client.query(updateBorrowSql, [
+      borrowuuid,
+      borrowerId,
+    ]);
+
+    if (borrowResult.rowCount === 0) {
+      await client.query("ROLLBACK");
+      return null;
+    }
+
+    const { tool_uuid, lender_uuid, quantity } = borrowResult.rows[0];
+
+    const restoreQuantityQuery = squel
+      .update()
+      .table("tool_owners")
+      .set("quantity", squel.str("quantity + ?", quantity))
+      .where("tool_uuid = ?", tool_uuid)
+      .where("lender_uuid = ?", lender_uuid);
+
+    const { text, values } = restoreQuantityQuery.toParam();
+    await client.query(text, values);
 
     await client.query("COMMIT");
-
-    return {
-      success: true,
-      message: "Tool returned successfully",
-    };
+    return true;
   } catch (err) {
     await client.query("ROLLBACK");
     throw err;
