@@ -1,10 +1,8 @@
 const userRepository = require("./userRepository");
+const {updatePersonalInfo, updateAddress} = require("../../validators");
 
-async function getLoggedInUserInfo(loggedInUserId){
-    const userId = loggedInUserId;
-    const userData = await userRepository.getLoggedInUserInfo(userId);
-
-    return userData;
+async function getLoggedInUserInfo(userId){
+    return await userRepository.getLoggedInUserInfo(userId);
 }
 
 // async function deleteMe(myId){
@@ -15,20 +13,15 @@ async function getLoggedInUserInfo(loggedInUserId){
 // }
 
 async function updateMyPersonalInfo(myId, data){
-    const userId = myId;
-    const updateData = data;
-    const updatedInfo = await userRepository.updateUserById(userId,updateData);
-
-    return updatedInfo;
+    const { error } = updatePersonalInfo.validate(data);
+    if (error) throw new Error(error.details[0].message);
+    return await userRepository.updateUserById(myId, data);
 }
 
 async function updateMyAddress(myId,addId,data){
-    const userId = myId;
-    const addressId = addId;
-    const updateData = data;
-    const updatedAddress = await userRepository.updateAddressById(userId, addressId, updateData);
-
-    return updatedAddress;
+    const { error } = updateAddress.validate({ addressId, ...data });
+    if (error) throw new Error(error.details[0].message);
+    return await userRepository.updateAddressById(myId,addId,data);
 }
 
 module.exports = {

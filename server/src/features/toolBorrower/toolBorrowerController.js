@@ -7,7 +7,7 @@ async function getAllBorrowedTools(req, res) {
 
     return res.status(200).json(tools);
   } catch (err) {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Could not get Borrowed Tools!",
     });
   }
@@ -22,7 +22,7 @@ async function getABorrow(req, res) {
 
     return res.status(200).json(result);
   } catch (err) {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Failed to Fetch Borrow Details!",
     });
   }
@@ -39,7 +39,7 @@ async function returnATool(req, res) {
     );
     return res.status(200).json(result);
   } catch (err) {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "Failed to Return the Tool! Try again later!",
     });
   }
