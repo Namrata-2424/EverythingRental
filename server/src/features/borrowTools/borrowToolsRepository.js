@@ -53,7 +53,7 @@ async function getAToolInfoById(tooluuid) {
   const { text, values } = query.toParam();
   const result = await pool.query(text, values);
 
-  return result.rows[0];
+  return result.rows[0] || null;
 }
 
 async function borrowATool(
@@ -62,65 +62,48 @@ async function borrowATool(
   lenderUuid,
   quantity,
   startDate,
-  dueDate,
+  dueDate
 ) {
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
 
-    const availabilityResult = await client.query(
-      `
-              SELECT quantity
-              FROM tool_owners
-              WHERE tool_uuid = $1
-                AND lender_uuid = $2
-              FOR UPDATE
-            `,
-      [tooluuid, lenderUuid],
-    );
+    const updateQuantityQuery = `
+      UPDATE tool_owners
+      SET quantity = quantity - $1
+      WHERE tool_uuid = $2
+        AND lender_uuid = $3
+        AND quantity >= $1
+      RETURNING quantity
+    `;
 
-    if (availabilityResult.rowCount === 0) {
-      throw new Error("Tool not found for this lender!");
+    const updateResult = await client.query(updateQuantityQuery, [
+      quantity,
+      tooluuid,
+      lenderUuid,
+    ]);
+
+    if (updateResult.rowCount === 0) {
+      await client.query("ROLLBACK");
+      return null;
     }
 
-    const availableQuantity = availabilityResult.rows[0].quantity;
+    const insertBorrowQuery = squel
+      .insert()
+      .into("tools_borrow_mapping")
+      .set("borrower_uuid", borrowerId)
+      .set("lender_uuid", lenderUuid)
+      .set("tool_uuid", tooluuid)
+      .set("quantity", quantity)
+      .set("start_date", startDate)
+      .set("due_date", dueDate);
 
-    if (availableQuantity < quantity) {
-      throw new Error("Not Enough Quantity available");
-    }
-
-    await client.query(
-      `
-              UPDATE tool_owners
-              SET quantity = quantity - $1
-              WHERE tool_uuid = $2
-                AND lender_uuid = $3
-            `,
-      [quantity, tooluuid, lenderUuid],
-    );
-
-    await client.query(
-      `
-      INSERT INTO tools_borrow_mapping (
-        borrower_uuid,
-        lender_uuid,
-        tool_uuid,
-        quantity,
-        start_date,
-        due_date
-      )
-      VALUES ($1, $2, $3, $4, $5, $6)
-      `,
-      [borrowerId, lenderUuid, tooluuid, quantity, startDate, dueDate],
-    );
+    const { text, values } = insertBorrowQuery.toParam();
+    await client.query(text, values);
 
     await client.query("COMMIT");
-
-    return {
-      success: true,
-      message: "Tool borrowed successfully",
-    };
+    return true;
   } catch (err) {
     await client.query("ROLLBACK");
     throw err;
@@ -128,6 +111,7 @@ async function borrowATool(
     client.release();
   }
 }
+
 
 module.exports = {
   getAllTools,
