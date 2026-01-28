@@ -1,0 +1,102 @@
+.tools-page {
+  min-height: 100vh;
+  padding: 32px 48px;
+  background: #f7f8f3;
+}
+
+.tools-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.brand-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #422d19;
+}
+
+.next-btn {
+  background-color: #896240;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 18px;
+  border: none;
+}
+
+.complete-btn {
+  background-color: #59693f;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 20px;
+  border: none;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.add-tool-panel {
+  background: #fff;
+  padding: 18px;
+  border-radius: 14px;
+  margin-bottom: 28px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #d6d6cf;
+}
+
+.form-control:disabled {
+  background: #f1f1ed;
+  cursor: not-allowed;
+}
+
+.tools-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tool-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.tool-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tool-main h6 {
+  margin: 0;
+  font-weight: 600;
+  color: #422d19;
+}
+
+.tool-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.tool-details {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f7f8f3;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: #777;
+  margin-top: 60px;
+}
+

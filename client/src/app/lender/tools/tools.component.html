@@ -1,0 +1,146 @@
+<div class="tools-page">
+
+  <div class="tools-header">
+    <h4 class="brand-title">My Listed Tools</h4>
+
+    <button
+      type="button"
+      class="btn next-btn"
+      (click)="toggleForm()"
+    >
+      {{ showForm ? 'Close' : '+ Add Tool' }}
+    </button>
+  </div>
+
+  <div class="add-tool-panel" *ngIf="showForm">
+    <form [formGroup]="toolForm">
+
+      <div class="row">
+        <div class="col-md-4">
+          <input
+            class="form-control"
+            placeholder="Tool Title *"
+            formControlName="title"
+            [disabled]="editMode"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <select
+            class="form-control"
+            formControlName="category"
+            [disabled]="editMode"
+          >
+            <option [ngValue]="null" disabled hidden>
+              Select Category *
+            </option>
+
+            <option
+              *ngFor="let cat of categories"
+              [value]="cat.value"
+            >
+              {{ cat.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <input
+            type="number"
+            min="1"
+            class="form-control"
+            placeholder="Qty *"
+            formControlName="quantity"
+          />
+        </div>
+
+        <div class="col-md-2">
+          <input
+            type="number"
+            min="1"
+            class="form-control"
+            placeholder="Days"
+            formControlName="borrow_day_count"
+          />
+        </div>
+      </div>
+
+      <textarea
+        class="form-control mt-2"
+        rows="2"
+        placeholder="Description (optional)"
+        formControlName="description"
+        [disabled]="editMode"
+      ></textarea>
+
+      <div class="d-flex justify-content-end mt-3">
+        <button
+          type="button"
+          class="btn complete-btn"
+          [disabled]="toolForm.invalid || loading"
+          (click)="submit()"
+        >
+          {{ editMode ? 'Update Tool' : 'Save Tool' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="tools-list">
+
+    <div *ngIf="tools.length === 0" class="empty-state">
+      No tools listed yet
+    </div>
+
+    <div class="tool-card" *ngFor="let tool of tools">
+
+      <div class="tool-row">
+        <div class="tool-main">
+          <h6>{{ tool.title }}</h6>
+
+          <small class="text-muted">
+            {{ getCategoryLabel(tool.category) }}
+            • Qty: {{ tool.quantity }}
+            <span *ngIf="tool.borrow_day_count">
+              • {{ tool.borrow_day_count }} days
+            </span>
+          </small>
+        </div>
+
+        <div class="tool-actions">
+          <button
+            class="btn btn-sm btn-outline-primary"
+            (click)="viewTool(tool)"
+          >
+            {{ viewingToolUuid === tool.tool_uuid ? 'Hide' : 'View' }}
+          </button>
+
+          <button
+            class="btn btn-sm btn-outline-success"
+            (click)="editTool(tool)"
+          >
+            Update
+          </button>
+
+          <button
+            class="btn btn-sm btn-outline-danger"
+            (click)="delete(tool.tool_uuid)"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="tool-details"
+        *ngIf="viewingToolUuid === tool.tool_uuid"
+      >
+        <p><strong>Description:</strong> {{ tool.description || '—' }}</p>
+        <p><strong>Category:</strong> {{ getCategoryLabel(tool.category) }}</p>
+        <p><strong>Quantity:</strong> {{ tool.quantity }}</p>
+        <p><strong>Borrow Days:</strong> {{ tool.borrow_day_count || 7 }}</p>
+      </div>
+
+    </div>
+  </div>
+</div>
