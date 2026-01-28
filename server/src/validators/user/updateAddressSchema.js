@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const uuid = require("../common/uuid.schema");
+const uuid = require("../common/uuidSchema");
 
 module.exports = Joi.object({
   addressId: uuid.required(),
