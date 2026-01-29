@@ -50,7 +50,21 @@
 
     <h4 class="section-title">Available Lenders</h4>
 
-    <table class="lenders-table">
+    <div
+      *ngIf="!hasAnyActiveLenders() && hasOnlySelfAsLender()"
+      class="alert alert-info mt-3"
+    >
+      You are the only lender of this item.
+    </div>
+
+    <div
+      *ngIf="!hasAnyActiveLenders() && !hasOnlySelfAsLender()"
+      class="alert alert-warning mt-3"
+    >
+      No active lenders are currently available for this item.
+    </div>
+
+    <table *ngIf="hasAnyActiveLenders()" class="lenders-table">
       <thead>
         <tr>
           <th>Lender</th>
@@ -62,7 +76,7 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let lender of tool.lenders">
+        <tr *ngFor="let lender of getVisibleLenders()">
           <td>{{ lender.username }}</td>
           <td>{{ lender.quantity }}</td>
           <td>{{ formatDate(lender.start_date) }}</td>

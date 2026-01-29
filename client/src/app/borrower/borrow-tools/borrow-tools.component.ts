@@ -4,6 +4,14 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BorrowerService } from '../borrower.service';
 
+interface Lender {
+  username: string;
+  quantity: number;
+  start_date: string;
+  days?: number;
+  lender_uuid?: string;
+}
+
 @Component({
   selector: 'app-borrow-tools',
   standalone: true,
@@ -12,6 +20,7 @@ import { BorrowerService } from '../borrower.service';
   styleUrls: ['./borrow-tools.component.scss'],
 })
 export class BorrowToolsComponent implements OnInit {
+  currentUsername!: string;
   tools: any[] = [];
   tool: any | null = null;
   selectedLender: any | null = null;
@@ -31,6 +40,8 @@ export class BorrowToolsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.currentUsername = localStorage.getItem('username') || '';
+
     this.route.paramMap.subscribe((params) => {
       this.tooluuid = params.get('tooluuid');
 
@@ -60,6 +71,47 @@ export class BorrowToolsComponent implements OnInit {
     });
   }
 
+  getVisibleLenders(): Lender[] {
+    if (!this.tool?.lenders) return [];
+
+    const currentUser = this.currentUsername.trim().toLowerCase();
+
+    return (this.tool.lenders as Lender[]).filter((lender: Lender) => {
+      const lenderUsername = lender.username?.trim().toLowerCase();
+      console.log('Current user:', this.currentUsername);
+      console.log('All lenders:', this.tool.lenders);
+
+      if (lenderUsername === currentUser) {
+        return false;
+      }
+
+      const start = new Date(lender.start_date);
+      const days = lender.days ?? 7;
+
+      const due = new Date(start);
+      due.setDate(due.getDate() + days);
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      return due >= today;
+    });
+  }
+
+  hasOnlySelfAsLender(): boolean {
+    if (!this.tool?.lenders || !this.currentUsername) return false;
+
+    const currentUser = this.currentUsername.trim().toLowerCase();
+
+    return this.tool.lenders.every(
+      (l: any) => l.username?.trim().toLowerCase() === currentUser,
+    );
+  }
+
+  hasAnyActiveLenders(): boolean {
+    return this.getVisibleLenders().length > 0;
+  }
+
   selectLender(lender: any): void {
     this.selectedLender = lender;
     this.borrowForm.reset({ quantity: 1 });
@@ -69,10 +121,14 @@ export class BorrowToolsComponent implements OnInit {
     return new Date(dateStr).toLocaleDateString();
   }
 
-  calculateDueDate(startDate: string, days: number): string {
-    const d = new Date(startDate);
-    d.setDate(d.getDate() + (days || 7));
-    return d.toLocaleDateString();
+  calculateDueDate(startDate: string, days?: number): string {
+    const borrowDays = days ?? 7; // default borrow limit
+
+    const start = new Date(startDate);
+    const due = new Date(start);
+    due.setDate(due.getDate() + borrowDays);
+
+    return due.toLocaleDateString();
   }
 
   borrow(): void {
