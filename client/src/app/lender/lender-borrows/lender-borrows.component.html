@@ -1,0 +1,50 @@
+
+<div class="borrows-page">
+
+  <h4 class="page-title">Borrowed Tools (My Lendings)</h4>
+
+  <div *ngIf="loading" class="text-muted">
+    Loading borrows...
+  </div>
+
+  <div *ngIf="!loading && borrows.length === 0" class="empty">
+    No borrow records found
+  </div>
+
+  <div class="borrow-card" *ngFor="let b of borrows">
+
+    <div class="borrow-main">
+      <h6>{{ b.tool_title }}</h6>
+
+      <small class="text-muted">
+        Borrowed by <strong>{{ b.borrower_username }}</strong>
+      </small>
+
+      <div class="meta">
+        <span>Qty: {{ b.quantity }}</span>
+        <span>Start: {{ b.start_date | date }}</span>
+        <span>Due: {{ b.due_date | date }}</span>
+      </div>
+
+      <span
+        class="status"
+        [class.returned]="b.return_status === 'RETURNED'"
+        [class.pending]="!b.return_date"
+      >
+        {{ b.return_status || 'PENDING' }}
+      </span>
+    </div>
+
+    <div class="actions">
+      <button
+        *ngIf="isReturnPending(b)"
+        class="btn btn-sm btn-success"
+        (click)="approveReturn(b.borrow_uuid)"
+      >
+        Approve Return
+      </button>
+    </div>
+
+  </div>
+
+</div>

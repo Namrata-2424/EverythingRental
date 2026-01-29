@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from '../guards/auth.guard';
 import { LenderLayoutComponent } from './lender-layout.component';
 import { ToolsComponent } from './tools/tools.component';
+import { LenderBorrowsComponent } from './lender-borrows/lender-borrows.component';
 
 export const lenderRoutes: Routes = [
   {
@@ -11,13 +12,17 @@ export const lenderRoutes: Routes = [
     children: [
       {
         path: 'tools',
-        component: ToolsComponent
+        component: ToolsComponent,
       },
       {
         path: '',
         redirectTo: 'tools',
-        pathMatch: 'full'
-      }
-    ]
-  }
+        pathMatch: 'full',
+      },
+      {
+        path: 'lent',
+        component: LenderBorrowsComponent
+      },
+    ],
+  },
 ];
