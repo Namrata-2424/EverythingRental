@@ -4,9 +4,11 @@ const { pool } = require("../../shared/config/db");
 async function getAllBorrowedToolsByUserId(borrowerId) {
   const query = squel
     .select()
+    .field("b.borrow_uuid")
     .field("t.title")
     .field("b.quantity")
     .field("b.due_date")
+    .field("b.return_status")
     .from("tools_borrow_mapping", "b")
     .join("tools", "t", "b.tool_uuid=t.tool_uuid")
     .where("b.borrower_uuid = ?", borrowerId);
@@ -48,52 +50,23 @@ async function getABorrowById(borrowerId, borrowuuid) {
 }
 
 async function returnAToolById(borrowerId, borrowuuid) {
-  const client = await pool.connect();
+  const updateQuery = squel
+    .update()
+    .table("tools_borrow_mapping")
+    .set("return_status", "Initiated")
+    .set("return_date", squel.str("CURRENT_DATE"))
+    .where("borrow_uuid = ?", borrowuuid)
+    .where("borrower_uuid = ?", borrowerId)
+    .where("return_status = ?", "Borrowed")
+    .returning("borrow_uuid");
 
-  try {
-    await client.query("BEGIN");
+  const { text, values } = updateQuery.toParam();
+  const result = await pool.query(text, values);
 
-    const updateBorrowSql = `
-      UPDATE tools_borrow_mapping
-      SET
-        return_status = 'Returned',
-        return_date = CURRENT_DATE
-      WHERE borrow_uuid = $1
-        AND borrower_uuid = $2
-        AND return_status = 'Borrowed'
-      RETURNING tool_uuid, lender_uuid, quantity
-    `;
-
-    const borrowResult = await client.query(updateBorrowSql, [
-      borrowuuid,
-      borrowerId,
-    ]);
-
-    if (borrowResult.rowCount === 0) {
-      await client.query("ROLLBACK");
-      return null;
-    }
-
-    const { tool_uuid, lender_uuid, quantity } = borrowResult.rows[0];
-
-    const restoreQuantityQuery = squel
-      .update()
-      .table("tool_owners")
-      .set("quantity", squel.str("quantity + ?", quantity))
-      .where("tool_uuid = ?", tool_uuid)
-      .where("lender_uuid = ?", lender_uuid);
-
-    const { text, values } = restoreQuantityQuery.toParam();
-    await client.query(text, values);
-
-    await client.query("COMMIT");
-    return true;
-  } catch (err) {
-    await client.query("ROLLBACK");
-    throw err;
-  } finally {
-    client.release();
+  if (result.rowCount === 0) {
+    return null;
   }
+  return { success: true, status: "Initiated" };
 }
 
 module.exports = {

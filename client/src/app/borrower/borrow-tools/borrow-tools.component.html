@@ -1,0 +1,102 @@
+<div class="borrow-page">
+  <ng-container *ngIf="!tool">
+    <div class="page-header">
+      <h3>Borrow Tools</h3>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search for a drill, ladder, lawnmower…"
+      />
+    </div>
+
+    <div *ngIf="tools.length === 0" class="empty-state">
+      No tools available to borrow
+    </div>
+
+    <div *ngIf="tools.length > 0" class="tools-grid">
+      <div class="tool-card" *ngFor="let t of tools">
+        <div class="image-box"></div>
+
+        <div class="tool-body">
+          <h5>{{ t.title }}</h5>
+          <span class="category">{{ t.category }}</span>
+          <p class="desc">{{ t.description }}</p>
+
+          <div class="meta">Available: {{ t.total_quantity }}</div>
+
+          <button
+            class="view-btn"
+            [routerLink]="['/borrower/borrow-tools', t.tool_uuid]"
+          >
+            View & Borrow
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="tool">
+    <a class="back-link" (click)="back()">← Back</a>
+
+    <div class="tool-info">
+      <h3>{{ tool.title }}</h3>
+      <p>{{ tool.description }}</p>
+
+      <div class="meta-row">
+        <span><strong>Category:</strong> {{ tool.category }}</span>
+        <span><strong>Total Available:</strong> {{ tool.total_quantity }}</span>
+      </div>
+    </div>
+
+    <h4 class="section-title">Available Lenders</h4>
+
+    <table class="lenders-table">
+      <thead>
+        <tr>
+          <th>Lender</th>
+          <th>Quantity</th>
+          <th>Start Date</th>
+          <th>Due Date</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let lender of tool.lenders">
+          <td>{{ lender.username }}</td>
+          <td>{{ lender.quantity }}</td>
+          <td>{{ formatDate(lender.start_date) }}</td>
+          <td>{{ calculateDueDate(lender.start_date, lender.days) }}</td>
+          <td>
+            <button class="borrow-btn" (click)="selectLender(lender)">
+              Borrow
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="selectedLender" class="borrow-panel">
+      <h5>Borrow from {{ selectedLender.username }}</h5>
+
+      <form [formGroup]="borrowForm">
+        <input
+          type="number"
+          class="form-control"
+          min="1"
+          [max]="selectedLender.quantity"
+          formControlName="quantity"
+        />
+
+        <button
+          type="button"
+          class="confirm-btn"
+          [disabled]="borrowForm.invalid || loading"
+          (click)="borrow()"
+        >
+          Confirm Borrow
+        </button>
+      </form>
+    </div>
+  </ng-container>
+</div>

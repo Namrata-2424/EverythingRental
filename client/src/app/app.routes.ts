@@ -5,6 +5,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { authGuard } from './guards/auth.guard';
 import { guestGuard } from './guards/guest.guard';
 import { lenderRoutes } from './lender/lender.routes';
+import { borrowerRoutes } from './borrower/borrower.routes';
 export const routes: Routes = [
   {
     path: '',
@@ -14,28 +15,28 @@ export const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent,
-    canActivate: [guestGuard]
+    canActivate: [guestGuard],
   },
   {
     path: 'login',
     loadComponent: () =>
       import('./auth/login/login.component').then((m) => m.LoginComponent),
-    canActivate: [guestGuard]
+    canActivate: [guestGuard],
   },
   {
     path: 'home',
     component: HomeComponent,
-    canActivate: [authGuard]
+    canActivate: [authGuard],
   },
   {
-    path:'profile',
+    path: 'profile',
     component: ProfileComponent,
-    canActivate: [authGuard]
+    canActivate: [authGuard],
   },
   ...lenderRoutes,
+  ...borrowerRoutes,
   {
     path: '**',
     redirectTo: 'register',
   },
-
 ];
