@@ -4,12 +4,14 @@ const { pool } = require("../../shared/config/db");
 async function getAllTools() {
   const query = squel
     .select()
+    .field("t.tool_uuid")
     .field("t.title")
     .field("t.category")
     .field("t.description")
     .field("SUM(o.quantity)", "total_quantity")
     .from("tools", "t")
     .join("tool_owners", "o", "o.tool_uuid=t.tool_uuid")
+    .group("t.tool_uuid")
     .group("t.title")
     .group("t.category")
     .group("t.description")
@@ -32,6 +34,7 @@ async function getAToolInfoById(tooluuid) {
       `
         json_agg(
           json_build_object(
+            'lender_uuid', o.lender_uuid,
             'username',u.username,
             'quantity', o.quantity,
             'start_date', o.created_at,

@@ -1,0 +1,147 @@
+.borrow-page {
+  padding: 32px 48px;
+  background: #f7f8f3;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.search-input {
+  width: 320px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d6d6cf;
+}
+
+/* GRID */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+.tool-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.image-box {
+  height: 160px;
+  background: #eee;
+}
+
+.image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tool-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tool-body h5 {
+  margin: 0;
+  font-weight: 600;
+  color: #422d19;
+}
+
+.category {
+  font-size: 0.75rem;
+  background: #efe7dc;
+  padding: 4px 8px;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.desc {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.meta {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.view-btn {
+  margin-top: auto;
+  background: #896240;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  cursor: pointer;
+  color: #4b5d40;
+}
+
+.tool-info {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+}
+
+.lenders-table {
+  width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+.lenders-table th,
+.lenders-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.borrow-btn {
+  background: #4b5d40;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+}
+
+.borrow-panel {
+  margin-top: 24px;
+  background: #fff;
+  padding: 18px;
+  border-radius: 14px;
+}
+
+.confirm-btn {
+  margin-top: 12px;
+  background: #59693f;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+}
+
+.empty-state {
+  text-align: center;
+  color: #777;
+  margin-top: 80px;
+}

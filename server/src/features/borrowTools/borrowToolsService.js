@@ -24,6 +24,10 @@ async function borrowATool(
   startDate,
   dueDate,
 ) {
+  if (borrowerId === lenderuuid) {
+    throw new Error("You cannot borrow a tool from yourself");
+  }
+
   const { error } = borrowTool.validate({
     borrowerId,
     tooluuid,

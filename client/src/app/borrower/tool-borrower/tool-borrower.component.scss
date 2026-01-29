@@ -1,0 +1,66 @@
+.borrow-page {
+  padding: 32px 48px;
+  background: #f7f8f3;
+  min-height: 100vh;
+}
+
+.page-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #422d19;
+}
+
+.borrow-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.borrow-card {
+  background: #fff;
+  padding: 16px 20px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.borrow-info h5 {
+  margin: 0;
+  color: #422d19;
+}
+
+.meta {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.borrow-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-outline {
+  border: 1px solid #59693f;
+  background: transparent;
+  color: #59693f;
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+
+.btn-danger {
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+
+.detail-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
