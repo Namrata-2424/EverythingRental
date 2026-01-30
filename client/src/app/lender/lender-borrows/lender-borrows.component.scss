@@ -1,5 +1,5 @@
 .borrows-page {
-  padding: 30px 50px;
+  padding: 32px 48px;
   min-height: calc(100vh - 70px);
   background: #f7f8f3;
 }
@@ -24,6 +24,7 @@
 .borrow-main h6 {
   margin: 0;
   font-weight: 600;
+  color: #422d19;
 }
 
 .meta {
@@ -36,7 +37,7 @@
 .status {
   display: inline-block;
   margin-top: 8px;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 500;
@@ -50,6 +51,11 @@
 .status.returned {
   background: #d4edda;
   color: #155724;
+}
+
+.status.late {
+  background: #f8d7da;
+  color: #721c24;
 }
 
 .actions button {

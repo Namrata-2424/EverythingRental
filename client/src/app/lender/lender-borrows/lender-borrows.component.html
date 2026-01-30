@@ -1,18 +1,13 @@
-
 <div class="borrows-page">
-
   <h4 class="page-title">Borrowed Tools (My Lendings)</h4>
 
-  <div *ngIf="loading" class="text-muted">
-    Loading borrows...
-  </div>
+  <div *ngIf="loading" class="text-muted">Loading borrows...</div>
 
   <div *ngIf="!loading && borrows.length === 0" class="empty">
     No borrow records found
   </div>
 
   <div class="borrow-card" *ngFor="let b of borrows">
-
     <div class="borrow-main">
       <h6>{{ b.tool_title }}</h6>
 
@@ -28,10 +23,11 @@
 
       <span
         class="status"
-        [class.returned]="b.return_status === 'RETURNED'"
-        [class.pending]="!b.return_date"
+        [class.pending]="b.return_status === 'Initiated'"
+        [class.returned]="b.return_status === 'Returned'"
+        [class.late]="b.return_status === 'Late Returned'"
       >
-        {{ b.return_status || 'PENDING' }}
+        {{ b.return_status }}
       </span>
     </div>
 
@@ -44,7 +40,5 @@
         Approve Return
       </button>
     </div>
-
   </div>
-
 </div>

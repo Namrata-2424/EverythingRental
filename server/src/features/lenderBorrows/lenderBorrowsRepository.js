@@ -51,28 +51,38 @@ async function markReturnApproved(borrowUuid) {
   try {
     await client.query("BEGIN");
 
-    const getBorrowQuery = `
-      SELECT tool_uuid, lender_uuid, quantity
+    const borrowRes = await client.query(
+      `
+      SELECT tool_uuid, lender_uuid, quantity, due_date
       FROM tools_borrow_mapping
       WHERE borrow_uuid = $1
         AND return_date IS NULL
+        AND return_status = 'Initiated'
       FOR UPDATE
-    `;
-    const borrowRes = await client.query(getBorrowQuery, [borrowUuid]);
+      `,
+      [borrowUuid]
+    );
 
     if (borrowRes.rowCount === 0) {
       throw new Error("Borrow record not found or already returned");
     }
 
-    const { tool_uuid, lender_uuid, quantity } = borrowRes.rows[0];
+    const { tool_uuid, lender_uuid, quantity, due_date } = borrowRes.rows[0];
+
+    const status =
+      new Date() > new Date(due_date)
+        ? "Late Returned"
+        : "Returned";
 
     await client.query(
       `
       UPDATE tools_borrow_mapping
-      SET return_date = CURRENT_DATE
-      WHERE borrow_uuid = $1
+      SET
+        return_status = $1,
+        return_date = CURRENT_DATE
+      WHERE borrow_uuid = $2
       `,
-      [borrowUuid]
+      [status, borrowUuid]
     );
 
     await client.query(
@@ -86,14 +96,11 @@ async function markReturnApproved(borrowUuid) {
     );
 
     await client.query("COMMIT");
-
-    return { borrow_uuid };
+    return { borrow_uuid: borrowUuid };
 
   } catch (err) {
     await client.query("ROLLBACK");
     throw err;
-  } finally {
-    client.release();
   }
 }
 

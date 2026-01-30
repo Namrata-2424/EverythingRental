@@ -22,8 +22,16 @@ export class LenderBorrowsComponent implements OnInit {
   }
 
   fetchBorrows(): void {
+    this.loading = true;
+
     this.toolsService.getAllBorrows().subscribe({
-      next: (res) => (this.borrows = res),
+      next: (res) => {
+        this.borrows = res;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
   }
 
@@ -39,6 +47,14 @@ export class LenderBorrowsComponent implements OnInit {
   }
 
   isReturnPending(borrow: any): boolean {
-    return !borrow.return_date;
+    return borrow.return_status === 'Initiated';
+  }
+
+  isReturned(borrow: any): boolean {
+    return borrow.return_status === 'Returned';
+  }
+
+  isLateReturned(borrow: any): boolean {
+    return borrow.return_status === 'Late Returned';
   }
 }
