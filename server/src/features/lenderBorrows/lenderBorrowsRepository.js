@@ -46,18 +46,64 @@ async function getBorrowById(borrowUuid) {
 }
 
 async function markReturnApproved(borrowUuid) {
-  const query = squel
-    .update()
-    .table("tools_borrow_mapping")
-    .set("return_status", "RETURNED")
-    .set("return_date", squel.str("CURRENT_DATE"))
-    .where("borrow_uuid = ?", borrowUuid)
-    .returning("borrow_uuid");
+  const client = await pool.connect();
 
-  const { text, values } = query.toParam();
-  const res = await pool.query(text, values);
-  return res.rows[0];
+  try {
+    await client.query("BEGIN");
+
+    const borrowRes = await client.query(
+      `
+      SELECT tool_uuid, lender_uuid, quantity, due_date
+      FROM tools_borrow_mapping
+      WHERE borrow_uuid = $1
+        AND return_date IS NULL
+        AND return_status = 'Initiated'
+      FOR UPDATE
+      `,
+      [borrowUuid]
+    );
+
+    if (borrowRes.rowCount === 0) {
+      throw new Error("Borrow record not found or already returned");
+    }
+
+    const { tool_uuid, lender_uuid, quantity, due_date } = borrowRes.rows[0];
+
+    const status =
+      new Date() > new Date(due_date)
+        ? "Late Returned"
+        : "Returned";
+
+    await client.query(
+      `
+      UPDATE tools_borrow_mapping
+      SET
+        return_status = $1,
+        return_date = CURRENT_DATE
+      WHERE borrow_uuid = $2
+      `,
+      [status, borrowUuid]
+    );
+
+    await client.query(
+      `
+      UPDATE tool_owners
+      SET quantity = quantity + $1
+      WHERE tool_uuid = $2
+        AND lender_uuid = $3
+      `,
+      [quantity, tool_uuid, lender_uuid]
+    );
+
+    await client.query("COMMIT");
+    return { borrow_uuid: borrowUuid };
+
+  } catch (err) {
+    await client.query("ROLLBACK");
+    throw err;
+  }
 }
+
 
 module.exports = {
   getAllBorrowsByLender,

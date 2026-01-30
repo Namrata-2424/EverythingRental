@@ -1,0 +1,69 @@
+.borrows-page {
+  padding: 32px 48px;
+  min-height: calc(100vh - 70px);
+  background: #f7f8f3;
+}
+
+.page-title {
+  font-weight: 600;
+  color: #422d19;
+  margin-bottom: 20px;
+}
+
+.borrow-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.borrow-main h6 {
+  margin: 0;
+  font-weight: 600;
+  color: #422d19;
+}
+
+.meta {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  display: flex;
+  gap: 14px;
+}
+
+.status {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.returned {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.late {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.actions button {
+  border-radius: 8px;
+}
+
+.empty {
+  text-align: center;
+  color: #777;
+  margin-top: 60px;
+}

@@ -54,7 +54,6 @@ async function returnAToolById(borrowerId, borrowuuid) {
     .update()
     .table("tools_borrow_mapping")
     .set("return_status", "Initiated")
-    .set("return_date", squel.str("CURRENT_DATE"))
     .where("borrow_uuid = ?", borrowuuid)
     .where("borrower_uuid = ?", borrowerId)
     .where("return_status = ?", "Borrowed")

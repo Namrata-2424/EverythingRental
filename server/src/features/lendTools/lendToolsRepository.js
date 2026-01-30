@@ -23,7 +23,10 @@ async function createToolOwner(lenderUuid, toolUuid, ownerData) {
     .set("tool_uuid", toolUuid)
     .set("quantity", ownerData.quantity);
 
-  if (ownerData.borrow_day_count !== undefined) {
+  if (
+    ownerData.borrow_day_count !== undefined &&
+    ownerData.borrow_day_count !== null
+  ) {
     if (ownerData.borrow_day_count <= 0) {
       throw new Error("Borrow day count must be greater than 0");
     }
@@ -46,7 +49,7 @@ async function isToolCurrentlyBorrowed(toolUuid) {
   const { text, values } = query.toParam();
   const res = await pool.query(text, values);
 
-  return res.rowCount > 0; 
+  return res.rowCount > 0;
 }
 
 async function deleteToolOwner(toolUuid) {
@@ -60,10 +63,7 @@ async function deleteToolOwner(toolUuid) {
 }
 
 async function deleteTool(toolUuid) {
-  const query = squel
-    .delete()
-    .from("tools")
-    .where("tool_uuid = ?", toolUuid);
+  const query = squel.delete().from("tools").where("tool_uuid = ?", toolUuid);
 
   const { text, values } = query.toParam();
   await pool.query(text, values);
@@ -147,5 +147,5 @@ module.exports = {
   getToolByUuid,
   getAllToolsByLender,
   updateToolOwner,
-  isToolCurrentlyBorrowed
+  isToolCurrentlyBorrowed,
 };
